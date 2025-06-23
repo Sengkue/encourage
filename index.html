@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Encouragement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        .quote-container {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            z-index: 2;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .quote-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .quote {
+            font-size: 1.4em;
+            color: #2d3748;
+            font-style: italic;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .author {
+            font-size: 1em;
+            color: #4a5568;
+            font-weight: bold;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .mood-tracker {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .mood-tracker h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .mood-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mood-btn {
+            font-size: 2em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: none;
+        }
+
+        .mood-btn:hover {
+            transform: scale(1.3) rotate(10deg);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .mood-btn.selected {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.2);
+        }
+
+        .encouragement-message {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            border-radius: 10px;
+            color: #2d3748;
+            font-weight: bold;
+            font-size: 1.1em;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .encouragement-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .quote {
+                font-size: 1.2em;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <h1>✨ ກຳລັງໃຈປະຈຳມື້ ✨</h1>
+        
+        <div class="quote-container">
+            <div class="quote" id="quote">ກຳລັງໂຫຼດແຮງບັນດານໃຈປະຈຳມື້ຂອງເຈົ້າ...</div>
+            <div class="author" id="author"></div>
+        </div>
+        
+        <div class="buttons">
+            <button onclick="getNewQuote()">ຄຳພູດໃໝ່ 🌟</button>
+            <button onclick="getAffirmation()">ຄຳຢືນຢັນ 💪</button>
+            <button onclick="getMotivation()">ກຳລັງໃຈ 🚀</button>
+        </div>
+        
+        <div class="mood-tracker">
+            <h3>ມື້ນີ້ເຈົ້າຮູ້ສຶກແນວໃດ?</h3>
+            <div class="mood-buttons">
+                <button class="mood-btn" onclick="selectMood('😊', 'happy')">😊</button>
+                <button class="mood-btn" onclick="selectMood('😔', 'sad')">😔</button>
+                <button class="mood-btn" onclick="selectMood('😤', 'stressed')">😤</button>
+                <button class="mood-btn" onclick="selectMood('😴', 'tired')">😴</button>
+                <button class="mood-btn" onclick="selectMood('🤔', 'confused')">🤔</button>
+                <button class="mood-btn" onclick="selectMood('😌', 'peaceful')">😌</button>
+            </div>
+            <div class="encouragement-message" id="encouragementMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            { text: "ຄວາມສຸກແມ່ນການເລືອກ. ເລືອກຄວາມສຸກທຸກມື້", author: "ຄຳສອນລາວ" },
+            { text: "ຂ້າງໜ້າແມ່ນແສງສະຫວ່າງ, ຢ່າໄປຫລຽວຫລັງ", author: "ສະຕິປັນຍາລາວ" },
+            { text: "ໃຈເຂັ້ມແຂງ ຄືພູເຂົາ, ບໍ່ຫວັ່ນໄຫວຕໄລພາຍຸ", author: "ຄຳສອນບູຮານ" },
+            { text: "ທຸກບັນຫາມີທາງອອກ, ສຳຄັນຢູ່ການບໍ່ຍອມແພ້", author: "ປັນຍາລາວ" },
+            { text: "ມື້ວານຜ່ານໄປແລ້ວ, ມື້ນີ້ແມ່ນຊີວິດໃໝ່", author: "ປະສົບການຊີວິດ" },
+            { text: "ຄົນເຮົາສາມາດທຳໄດ້ທຸກຢ່າງ ຖ້າມີກຳລັງໃຈ", author: "ຄວາມເຊື່ອລາວ" },
+            { text: "ຄວາມຫຍຸ້ງຍາກແມ່ນບົດຮຽນ, ບໍ່ແມ່ນຈຸດຈົບ", author: "ປັນຍາຊົນລາວ" },
+            { text: "ຮອຍຍິ້ມນຶ່ງສາມາດປ່ຽນໂລກໄດ້", author: "ແນວຄິດບວກ" },
+            { text: "ຄົນດີມີຄວາມສຸກ, ຄົນເຂັ້ມແຂງມີອະນາຄົດ", author: "ປະເພນີລາວ" },
+            { text: "ບໍ່ມີລົມແຮງໃດທີ່ພັດລົ້ມໄດ້ຕົ້ນໄຜ່ທີ່ຍຸດຍືດ", author: "ສຸພາສິດລາວ" }
+        ];
+
+        const affirmations = [
+            "ຂ້ອຍເຂັ້ມແຂງ ແລະ ສາມາດເອົາຊະນະທຸກຢ່າງໄດ້",
+            "ຂ້ອຍມີຄຸນຄ່າ ແລະ ສົມຄວນໄດ້ຮັບຄວາມສຸກ", 
+            "ມື້ນີ້ຂ້ອຍເລືອກຄວາມສຸກ ແລະ ຄວາມໝັ້ນໃຈ",
+            "ຂ້ອຍມີພະລັງທີ່ຈະປ່ຽນແປງຊີວິດໃຫ້ດີຂຶ້ນ",
+            "ທຸກມື້ຂ້ອຍເຕີບໂຕ ແລະ ເຂັ້ມແຂງຂຶ້ນ",
+            "ຂ້ອຍເຊື່ອໃນຕົວຂ້ອຍເອງ ແລະ ຄວາມສາມາດຂອງຂ້ອຍ",
+            "ຂ້ອຍມີຄວາມທົນທານ ແລະ ເອົາຊະນະທຸກສິ່ງທ້າທາຍໄດ້",
+            "ຂ້ອຍແຜ່ພະລັງບວກ ແລະ ດຶງດູດສິ່ງດີໆເຂົ້າມາ",
+            "ຂ້ອຍຢູ່ບ່ອນທີ່ຄວນຢູ່ໃນເວລານີ້",
+            "ຂ້ອຍຍອມຮັບໂອກາດໃໝ່ດ້ວຍຄວາມໝັ້ນໃຈ"
+        ];
+
+        const motivations = [
+            "ທຸກຄົນທີ່ຊຳນານແມ່ນເລີ່ມຈາກການເປັນຄົນໃໝ່. ສູ້ຕໍ່ໄປ! 💪",
+            "ຄວາມຝັນຂອງເຈົ້າມີຄຸນຄ່າ. ໄລ່ຕາມມັນດ້ວຍຄວາມກະຕືລືລົ້ນ! ✨",
+            "ການກ້າວນ້ອຍໆທຸກມື້ ນຳໄປສູ່ການປ່ຽນແປງໃຫຍ່",
+            "ເຈົ້າຜ່ານມື້ທີ່ຫຍຸ້ງຍາກທີ່ສຸດມາໄດ້ 100%. ເຈົ້າເຂັ້ມກວ່າທີ່ຄິດ! 🌟",
+            "ການກັບຄືນມາແມ່ນເຂັ້ມແຂງກວ່າການລົ້ມລົງສະເໝີ",
+            "ເຈົ້າບໍ່ຈຳເປັນຕ້ອງສົມບູນແບບ, ພຽງແຕ່ເປັນຕົວເຈົ້າເອງ",
+            "ການກ້າວໜ້າ, ບໍ່ແມ່ນຄວາມສົມບູນແບບ, ແມ່ນເປົ້າໝາຍ",
+            "ຄວາມສາມາດຂອງເຈົ້າບໍ່ຈຳກັດ. ຢ່າຍອມແພ້ຕົວເອງ! 🚀",
+            "ທຸກມື້ແມ່ນໂອກາດໃໝ່ເພື່ອກາຍເປັນຄົນທີ່ເຈົ້າຢາກເປັນ",
+            "ເຈົ້າກ້າຫານກວ່າທີ່ເຊື່ອ ແລະ ເຂັ້ມແຂງກວ່າທີ່ຄິດ 🦁"
+        ];
+
+        const moodResponses = {
+            happy: "ດີຫຼາຍເດີ້! ສືບຕໍ່ແຜ່ພະລັງບວກນີ້ໄປຕໍ່! ເຈົ້າແມ່ນແສງສະຫວ່າງຂອງໂລກ! ✨🌟",
+            sad: "ເສົ້າໃສບາງຄັ້ງກໍ່ປົກກະຕິ. ຈື່ໄວ້ວ່າຄວາມຮູ້ສຶກນີ້ຈະຜ່ານໄປ, ມື້ທີ່ສົດໃສກຳລັງຈະມາເຖິງ 🌈💙",
+            stressed: "ຫາຍໃຈເຂົ້າເລິກໆ. ເຈົ້າທຳໄດ້! ລອງມຸ້ງເປົ້າໃສ່ສິ່ງນຶ່ງໃນແຕ່ລະເວລາ. ເຈົ້າເຂັ້ມແຂງ! 🧘‍♀️💪",
+            tired: "ການພັກຜ່ອນກໍ່ສຳຄັນ. ຮັກແພງຕົວເອງ ແລະ ໃຫ້ເວລາທີ່ຈຳເປັນ. ພັກຜ່ອນແລ້ວກັບມາສູ້ອີກ 😴💤",
+            confused: "ຄວາມບໍ່ແນ່ໃຈບາງຄັ້ງກໍ່ເປັນເລື່ອງທົມມະດາ. ເຊື່ອໃຈຕົວເອງ - ເຈົ້າຈະຫາທາງໄດ້! 🧭⭐",
+            peaceful: "ຄວາມຮູ້ສຶກນີ້ງາມຫຼາຍ! ເພີດເພີນກັບຊ່ວງເວລາສະຫງົບນີ້. ເຈົ້າສົມດຸນແລ້ວ 🕊️🌸"
+        };
+
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function animateText() {
+            const quote = document.getElementById('quote');
+            const author = document.getElementById('author');
+            
+            // Reset animations
+            quote.style.animation = 'none';
+            author.style.animation = 'none';
+            
+            // Trigger reflow
+            quote.offsetHeight;
+            author.offsetHeight;
+            
+            // Restart animations
+            quote.style.animation = 'fadeInUp 0.8s ease forwards';
+            author.style.animation = 'fadeInUp 0.8s ease 0.3s forwards';
+        }
+
+        function getNewQuote() {
+            const randomQuote = getRandomItem(quotes);
+            document.getElementById('quote').textContent = `"${randomQuote.text}"`;
+            document.getElementById('author').textContent = `— ${randomQuote.author}`;
+            animateText();
+            createStars();
+        }
+
+        function getAffirmation() {
+            const randomAffirmation = getRandomItem(affirmations);
+            document.getElementById('quote').textContent = randomAffirmation;
+            document.getElementById('author').textContent = '— ຄຳຢືນຢັນສຳລັບເຈົ້າ';
+            animateText();
+            createStars();
+        }
+
+        function getMotivation() {
+            const randomMotivation = getRandomItem(motivations);
+            document.getElementById('quote').textContent = randomMotivation;
+            document.getElementById('author').textContent = '— ເພີ່ມກຳລັງໃຈ';
+            animateText();
+            createStars();
+        }
+
+        function selectMood(emoji, mood) {
+            // Remove selected class from all mood buttons
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked button
+            event.target.classList.add('selected');
+            
+            // Show encouragement message
+            const messageDiv = document.getElementById('encouragementMessage');
+            messageDiv.textContent = moodResponses[mood];
+            messageDiv.classList.add('show');
+            
+            createStars();
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            
+            // Clear existing stars
+            starsContainer.innerHTML = '';
+            
+            // Create new stars
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 4 + 2 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = Math.random() * 2 + 1 + 's';
+                starsContainer.appendChild(star);
+            }
+            
+            // Remove stars after animation
+            setTimeout(() => {
+                starsContainer.innerHTML = '';
+            }, 3000);
+        }
+
+        // Initialize with a random quote
+        window.addEventListener('load', () => {
+            getNewQuote();
+        });
+
+        // Add some initial ambient stars
+        function createAmbientStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.width = '2px';
+                    star.style.height = '2px';
+                    star.style.animationDuration = '3s';
+                    starsContainer.appendChild(star);
+                    
+                    setTimeout(() => {
+                        star.remove();
+                    }, 3000);
+                }, i * 1000);
+            }
+        }
+
+        // Create ambient stars every 5 seconds
+        setInterval(createAmbientStars, 5000);
+    </script>
+</body>
+</html>
